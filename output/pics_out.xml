@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vrobject>
-  <input states="1" windowheight="1024" width="1024" imagepath="https://www.dropbox.com/sh/1udke8r4lcaok3g/AABC4-VJ6b9SSyhMDKhp1Pn8a?raw=0" preview="4" windowwidth="1024" height="1024" preload="1" columns="36" rows="20" fileextension="jpg"/>
+  <input states="1" windowheight="1024" width="1024" imagepath="images" preview="4" windowwidth="1024" height="1024" preload="1" columns="36" rows="20" fileextension="jpg"/>
   <control simulatemass="1" lockedmouse="0" swapxy="0" lockedkeyboard="0" dblclickfullscreen="0" revx="0" invertwheel="0" revy="0" wrapx="1" wrapy="0" trapwheel="1" automovemode="1" lockedwheel="0" speedwheel="1.000" controller="1" sensitivity="10"/>
   <view>
     <start row="0" column="0" state="0"/>
