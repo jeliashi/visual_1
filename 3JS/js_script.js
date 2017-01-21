@@ -12,7 +12,7 @@ var loader = new THREE.ColladaLoader();
 
 	loader.load(
 		// resource URL
-		'./spion_core.dae',
+		'https://rawgit.com/jeliashi/visual_1/master/3JS/spion_core.dae',
 		// Function when resource is loaded
 		function ( collada ) {
 			spion = collada.scene;
