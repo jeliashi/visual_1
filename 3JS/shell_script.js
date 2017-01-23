@@ -30,13 +30,13 @@ THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
 function return_PEG_group(){
     var peg_group = new THREE.Group();
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('objects/');
+        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
         mtlLoader.load('peg.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('objects/');
+            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
             objLoader.load('peg.obj', function (object) {
                 peg_group.add(object);
                 return_PSMA_group();
@@ -48,13 +48,13 @@ var peg_group = return_PEG_group();
 
 function return_PSMA_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('objects/');
+        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
         mtlLoader.load('psma.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('objects/');
+            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
             objLoader.load('psma.obj', function (object) {
                 psma_group.add(object);
 
@@ -66,13 +66,13 @@ function return_PSMA_group(){
 
 function return_nitro_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('objects/');
+        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
         mtlLoader.load('nitro.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('objects/');
+            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
             objLoader.load('nitro.obj', function (object) {
                 nitro_group.add(object);
 
@@ -82,13 +82,13 @@ function return_nitro_group(){
 }
 function return_muc_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('objects/');
+        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
         mtlLoader.load('muc.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('objects/');
+            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
             objLoader.load('muc.obj', function (object) {
                 muc_group.add(object);
 
@@ -98,13 +98,13 @@ function return_muc_group(){
 }
 function return_3mrv_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('objects/');
+        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
         mtlLoader.load('3mrv.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('objects/');
+            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
             objLoader.load('3mrv.obj', function (object) {
                 mrv_group.add(object);
 
@@ -114,13 +114,13 @@ function return_3mrv_group(){
 }
 function return_glyoxyl_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('objects/');
+        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
         mtlLoader.load('glyoxyl.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('objects/');
+            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
             objLoader.load('glyoxyl.obj', function (object) {
                 glyoxyl_group.add(object);
 
@@ -130,13 +130,13 @@ function return_glyoxyl_group(){
 }
 function return_lysine_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('objects/');
+        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
         mtlLoader.load('lysine.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('objects/');
+            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
             objLoader.load('lysine.obj', function (object) {
                 lysine_group.add(object);
                 return_spion_group();
@@ -145,13 +145,13 @@ function return_lysine_group(){
 }
 function return_spion_group(){
     var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('objects/');
+        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
         mtlLoader.load('spion_core.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('objects/');
+            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
             objLoader.load('spion_core.obj', function (object) {
                 spion_group.add(object);
                 init();
