@@ -166,7 +166,7 @@ function init() {
     //var canvasWidth = window.innerWidth;
     //var canvasHeight = window.innerHeight;
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
-    camera.position.set(0, 10, 17);
+    camera.position.set(0, 1000, 1700);
 
     scene = new THREE.Scene();
     var size = 14,
