@@ -296,18 +296,18 @@ function init() {
         h.add( effectController,"SPION").name("SPION Core").onChange(render);
         h.add( effectController,"Nitro").name("Nitro Package").onChange(render);
         h.add( effectController,"Mucin").name("Mucin Package").onChange(render);
-        h.add( effectController,"mrv").name("3mrv Package").onChange(render);
+        h.add( effectController,"mrv").name("Glycogen Package").onChange(render);
         h.add( effectController,"Glyoxyl").name("Glyoxyl Package").onChange(render);
 
         h = gui.addFolder("Shell Geometry");
-        h.add( effectController,"pegscale",0.1,2.0,0.1).name("Shell Component Scale").onChange(render );
-        h.add( effectController,"pegico",0,6,1).name("Shell Icosahedron Detail").onChange(render );
-        h.add( effectController,"psmascale",0.1,2.0,0.1).name("Targetting Componet Scale").onChange(render );
-        h.add( effectController,"psmaico",0,3,1).name("Targetting Icosahedron Detail").onChange(render );
+        h.add( effectController,"pegscale",0.1,2.0,0.1).name("Scale Shell Component").onChange(render );
+        h.add( effectController,"pegico",0,6,1).name("Shell Ico Detail").onChange(render );
+        h.add( effectController,"psmascale",0.1,2.0,0.1).name("Scale Target Component").onChange(render );
+        h.add( effectController,"psmaico",0,3,1).name("Targetting Ico Detail").onChange(render );
         h.add( effectController,"shellrad",45,100,5.0).name("Shell Radius (um)").onChange(render );
 
         h = gui.addFolder("SPION/Lysine Geometry");
-        h.add( effectController,"lysineangle",5,70,5).name("Inter-Lysine Angle").onChange( render );
+        h.add( effectController,"lysineangle",5,70,5).name("Inter-Lys Ang").onChange( render );
         h.add( effectController,"lysinebranches",1,10,1).name("Lysine Branches").onChange( render );
         h.add( effectController,"lysinescale",0.1,2,0.1).name("Lysine Scale").onChange( render );
         h.add( effectController,"lysineico",0,4,1).name("Lysine Ico Detail").onChange( render );
@@ -320,7 +320,7 @@ function init() {
         h.add( effectController,"nglyoxyl",1,200,1).name("# Glyoxyl").onChange( render );
         h.add( effectController,"snitro",0.1,3,0.1).name("Scale of Nitro").onChange( render );
         h.add( effectController,"smuc",0.1,3,0.1).name("Scale of Mucin").onChange( render );
-        h.add( effectController,"smrv",0.1,3,0.1).name("Scale of 3MRV").onChange( render );
+        h.add( effectController,"smrv",0.1,3,0.1).name("Scale of Glycogen").onChange( render );
         h.add( effectController,"sglyoxyl",0.1,3,0.1).name("Scale of Glyoxyl").onChange( render );
 
 
