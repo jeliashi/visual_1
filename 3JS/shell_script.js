@@ -16,6 +16,8 @@ var spion_group = new THREE.Group();
 var dendrimer = new THREE.Object3D();
 
 var effectController;
+
+//Presence of Objects
 pegB = true;
 psmaB = true;
 nitroB = true;
@@ -24,6 +26,30 @@ mrvB = true;
 glyoxylB = true;
 lysineB = true;
 spionB = true;
+
+//Shell Geometries
+peg_scale = 1;
+peg_ico = 4;
+psma_scale = 1;
+psma_ico = 1;
+shell_rad = 65;
+
+//Spion/Lysine Geometry
+lysine_angle = 30;
+lysine_branches = 6;
+lysine_scale = 1;
+lysine_ico = 1;
+spion_radius = 10;
+
+//Package numbers
+n_nitro = 50;
+n_muc = 50;
+n_mrv = 50;
+n_glyoxyl = 50;
+s_nitro = 1;
+s_muc = 1;
+s_mrv = 1;
+s_glyoxyl = 1;
 
 
 THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
@@ -166,7 +192,7 @@ function init() {
     //var canvasWidth = window.innerWidth;
     //var canvasHeight = window.innerHeight;
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
-    camera.position.set(0, 1000, 1700);
+    camera.position.set(0, 100, 170);
 
     scene = new THREE.Scene();
     var size = 14,
@@ -225,177 +251,7 @@ function init() {
     setupGui();
     //cameraControls.target.set(scene.position);
 
-    function fillScene() {
 
-        pegshell = makePEGShell();
-        dendrimer.add(pegshell);
-        psma_shell = makePSMAShell();
-        dendrimer.add(psma_shell);
-        spion_core = makeSPION();
-        dendrimer.add(spion_core);
-        nitro_obj = makeNitroObj();
-        dendrimer.add(nitro_obj);
-
-        muc_obj = makeMucObj();
-        dendrimer.add(muc_obj);
-
-        mrv_obj = makeMrvObj();
-        dendrimer.add(mrv_obj);
-
-        glyoxyl_obj = makeGlyoxylObj();
-        dendrimer.add(glyoxyl_obj);
-
-        branch = makeLysineTree();
-        branchParent = applyLysineTrees(branch);
-        dendrimer.add(branchParent);
-        scene.add(dendrimer);
-
-    }
-    function makePEGShell(){
-        pegshell = new THREE.Object3D();
-        peg_mesh = new THREE.Object3D();
-        n_mesh = peg_group.children[0].children.length;
-        for (i=0;i<n_mesh;i++){peg_mesh.add(peg_group.children[0].children[i].clone())};
-        peg_mesh.scale.x=0.1;
-        peg_mesh.scale.y = 0.1;
-        peg_mesh.scale.z = 0.1;
-        ico_detail = 4;
-        radius = 65;
-        ico_geo = new THREE.IcosahedronGeometry(radius,ico_detail);
-        vertices = ico_geo.vertices;
-       n_vert = vertices.length;
-        for (i=0;i<n_vert;i++){
-            vertex = vertices[i];
-            xrot = Math.atan2(vertex.z,vertex.y);
-            zrot = Math.atan2(Math.sqrt(radius*radius - (vertex.x*vertex.x)),vertex.x);
-            tmp1 = peg_mesh.clone();
-            tmp1.rotation.z = zrot;
-            tmp1.rotation.x = xrot;
-            tmp1.position.x = vertex.x;
-            tmp1.position.y = vertex.y;
-            tmp1.position.z = vertex.z;
-            pegshell.add(tmp1);
-        }
-        return pegshell;
-
-    }
-    function makePSMAShell(){
-        psma_Shell =new THRE.Object3D();
-        psma_shell = new THREE.Object3D();
-        n_mesh = psma_group.children[0].children.length;
-        for (i=0; i < n_mesh; i++){psma_shell.add(psma_group.children[0].children[i].clone());};
-        psma_shell.scale.x = 0.1;
-        psma_shell.scale.y = 0.1;
-        psma_shell.scale.z = 0.1;
-        ico_detail = 1;
-        radius = 70;
-        ico_geo = new THREE.IcosahedronGeometry(radius,ico_detail);
-        vertices = ico_geo.vertices;
-        n_vert = vertices.length;
-        for (i=0;i<n_vert;i++){
-            vertex = vertices[i];
-            xrot = Math.atan2(vertex.z,vertex.y);
-            zrot = Math.atan2(Math.sqrt(radius*radius - (vertex.x*vertex.x)),vertex.x);
-            tmp1 = psma_shell.clone();
-            tmp1.rotation.z = zrot;
-            tmp1.rotation.x = xrot;
-            tmp1.position.x = vertex.x;
-            tmp1.position.y = vertex.y;
-            tmp1.position.z = vertex.z;
-            psma_Shell.add(tmp1);
-        }
-        return psma_Shell;
-
-    }
-    function makeSPION(){
-        spion_core = new THREE.Object3D();
-        n_mesh = spion_group.children[0].children.length;
-        for (i = 0; i < n_mesh; i++){
-            spion_core.add(spion_group.children[0].children[i].clone());
-        }
-        spion_core.scale.x = 0.075;
-        spion_core.scale.y = 0.075;
-        spion_core.scale.z = 0.075;
-        return spion_core;
-    }
-    function makeNitroObj(){
-        nitro_obj = new THREE.Object3D();
-        nitro_mesh = nitro_group.children[0].children[0].clone();
-        nitro_mesh.scale.x = 0.1;
-        nitro_mesh.scale.y = 0.1;
-        nitro_mesh.scale.z = 0.1;
-        N_nitro = 50;
-        for (i = 0; i < N_nitro; i++){
-            rad = Math.random()*50+10;
-            phi = Math.random()*Math.PI;
-            theta = Math.random()*2*Math.PI;
-            tmp1 = nitro_mesh.clone();
-            tmp1.position.x = rad*Math.cos(phi);
-            tmp1.position.y = rad*Math.sin(phi)*Math.sin(theta);
-            tmp1.position.z = rad*Math.sin(phi)*Math.cos(theta);
-            tmp1.rotation.z = Math.random()*2*Math.PI;
-            tmp1.rotation.x = Math.random()*Math.PI;
-            nitro_obj.add(tmp1);
-        }
-        return nitro_obj;
-    }
-    function makeMucObj(){
-        muc_obj = new THREE.Object3D();
-        muc_mesh = muc_group.children[0].children[0].clone();
-        muc_mesh.scale.x = 0.1;
-        muc_mesh.scale.y = 0.1;
-        muc_mesh.scale.z = 0.1;
-        N_muc = 50;
-        for (i = 0; i < N_muc; i++){
-            rad = Math.random()*50+10;
-            phi = Math.random()*Math.PI;
-            theta = Math.random()*2*Math.PI;
-            tmp1 = muc_mesh.clone();
-            tmp1.position.x = rad*Math.cos(phi);
-            tmp1.position.y = rad*Math.sin(phi)*Math.sin(theta);
-            tmp1.position.z = rad*Math.sin(phi)*Math.cos(theta);
-            tmp1.rotation.z = Math.random()*2*Math.PI;
-            tmp1.rotation.x = Math.random()*Math.PI;
-            muc_obj.add(tmp1);
-        }
-        return muc_obj;
-    }
-    function makeMrvObj(){
-        mrv_obj = new THREE.Object3D();
-        mrv_mesh = mrv_group.children[0].children[0].clone();
-        N_mrv = 50;
-        for (i = 0; i < N_nitro; i++){
-            rad = Math.random()*50+10;
-            phi = Math.random()*Math.PI;
-            theta = Math.random()*2*Math.PI;
-            tmp1 = mrv_mesh.clone();
-            tmp1.position.x = rad*Math.cos(phi);
-            tmp1.position.y = rad*Math.sin(phi)*Math.sin(theta);
-            tmp1.position.z = rad*Math.sin(phi)*Math.cos(theta);
-            tmp1.rotation.z = Math.random()*2*Math.PI;
-            tmp1.rotation.x = Math.random()*Math.PI;
-            mrv_obj.add(tmp1);
-        }
-        return mrv_obj;
-    }
-    function makeGlyoxylObj(){
-        glyoxyl_obj = new THREE.Object3D();
-        glyoxyl_mesh = glyoxyl_group.children[0].children[0].clone();
-        N_glyoxyl = 50;
-        for (i = 0; i < N_nitro; i++){
-            rad = Math.random()*50+10;
-            phi = Math.random()*Math.PI;
-            theta = Math.random()*2*Math.PI;
-            tmp1 = glyoxyl_mesh.clone();
-            tmp1.position.x = rad*Math.cos(phi);
-            tmp1.position.y = rad*Math.sin(phi)*Math.sin(theta);
-            tmp1.position.z = rad*Math.sin(phi)*Math.cos(theta);
-            tmp1.rotation.z = Math.random()*2*Math.PI;
-            tmp1.rotation.x = Math.random()*Math.PI;
-            glyoxyl_obj.add(tmp1);
-        }
-        return glyoxyl_obj;
-    }
 
 
     function setupGui(){
@@ -407,7 +263,29 @@ function init() {
             Nitro: true,
             Mucin: true,
             mrv: true,
-            Glyoxyl: true
+            Glyoxyl: true,
+
+            pegscale: 1,
+            pegico: 4,
+            psmascale: 1,
+            psmaico: 1,
+            shellrad: 65,
+
+            lysineangle: 30,
+            lysinebranches: 6,
+            lysinescale: 1,
+            lysineico: 1,
+            spionradius: 10,
+
+            nnitro: 50,
+            nmuc: 50,
+            nmrv: 50,
+            nglyoxyl: 50,
+            snitro: 1,
+            smuc: 1,
+            smrv: 1,
+            sglyoxyl: 1
+
         };
         var h;
         var gui = new dat.GUI();
@@ -420,31 +298,130 @@ function init() {
         h.add( effectController,"Mucin").name("Mucin Package").onChange(render);
         h.add( effectController,"mrv").name("3mrv Package").onChange(render);
         h.add( effectController,"Glyoxyl").name("Glyoxyl Package").onChange(render);
+
+        h = gui.addFolder("Shell Geometry");
+        h.add( effectController,"pegscale",0.1,2.0,0.1).name("Shell Component Scale").onChange(render );
+        h.add( effectController,"pegico",0,6,1).name("Shell Icosahedron Detail").onChange(render );
+        h.add( effectController,"psmascale",0.1,2.0,0.1).name("Targetting Componet Scale").onChange(render );
+        h.add( effectController,"psmaico",0,3,1).name("Targetting Icosahedron Detail").onChange(render );
+        h.add( effectController,"shellrad",45,100,5.0).name("Shell Radius (um)").onChange(render );
+
+        h = gui.addFolder("SPION/Lysine Geometry");
+        h.add( effectController,"lysineangle",5,70,5).name("Inter-Lysine Angle").onChange( render );
+        h.add( effectController,"lysinebranches",1,10,1).name("Lysine Branches").onChange( render );
+        h.add( effectController,"lysinescale",0.1,2,0.1).name("Lysine Scale").onChange( render );
+        h.add( effectController,"lysineico",0,4,1).name("Lysine Ico Detail").onChange( render );
+        h.add( effectController,"spionradius",2,30,1).name("SPION Radius").onChange( render );
+
+        h = gui.addFolder("Pacakages");
+        h.add( effectController,"nnitro",1,200,1).name("# Nitro").onChange( render );
+        h.add( effectController,"nmuc",1,200,1).name("# Mucin").onChange( render );
+        h.add( effectController,"nmrv",1,200,1).name("# 3MRV").onChange( render );
+        h.add( effectController,"nglyoxyl",1,200,1).name("# Glyoxyl").onChange( render );
+        h.add( effectController,"snitro",0.1,3,0.1).name("Scale of Nitro").onChange( render );
+        h.add( effectController,"smuc",0.1,3,0.1).name("Scale of Mucin").onChange( render );
+        h.add( effectController,"smrv",0.1,3,0.1).name("Scale of 3MRV").onChange( render );
+        h.add( effectController,"sglyoxyl",0.1,3,0.1).name("Scale of Glyoxyl").onChange( render );
+
+
     }
 
     animate();
 
-
 }
 
-function makeLysineTree() {
-    var angle = 30;
-    var branches = 6;
+function fillScene() {
+
+    createNewDendrimer();
+
+}
+function createNewDendrimer(){
+
+    scene.remove(dendrimer);
+    dendrimer = new THREE.Object3D();
+
+    if (pegB == true){dendrimer.add(group2objSurface(peg_group,0.1*peg_scale,peg_ico,shell_rad));};
+    if (psmaB == true){dendrimer.add(group2objSurface(psma_group,0.1,1,shell_rad+5*psma_scale));};
+    if (spionB == true){dendrimer.add(group2objComponents(spion_group,0.075*spion_radius/10,1,0,0,0));};
+    if (nitroB == true){dendrimer.add(group2objComponents(nitro_group,0.1*s_nitro,n_nitro,spion_radius,shell_rad-5*s_nitro,1));};
+    if (mucB == true){dendrimer.add(group2objComponents(muc_group,0.1*s_muc,n_muc,spion_radius,shell_rad-5*s_muc,1));};
+    if (mrvB == true){dendrimer.add(group2objComponents(mrv_group,1.0*s_mrv,n_mrv,spion_radius,shell_rad-5*s_mrv,1));};
+    if (glyoxylB == true){dendrimer.add(group2objComponents(glyoxyl_group,1.0*s_glyoxyl,n_glyoxyl,spion_radius,shell_rad-5*s_glyoxyl,1));};
+    if (lysineB == true){dendrimer.add(applyLysine(lysine_angle,lysine_branches,lysine_scale,lysine_ico,spion_radius));};
+    scene.add(dendrimer);
+}
+
+function group2objSurface(comp_group, dim_scale, ico_detail, radius){
+    comp_obj = new THREE.Object3D();
+    comp_mesh = new THREE.Object3D();
+    n_mesh = comp_group.children[0].children.length;
+    for (i=0;i<n_mesh;i++){comp_mesh.add(comp_group.children[0].children[i].clone());};
+        comp_mesh.scale.set(dim_scale,dim_scale,dim_scale);
+    ico_geo = new THREE.IcosahedronGeometry(radius,ico_detail);
+    vertices = ico_geo.vertices;
+    n_vert = vertices.length;
+    for (i=0;i<n_vert;i++){
+        vertex = vertices[i];
+        xrot = Math.atan2(vertex.z,vertex.y);
+        zrot = Math.atan2(Math.sqrt(radius*radius - (vertex.x*vertex.x)),vertex.x);
+        tmp1 = comp_mesh.clone();
+        tmp1.rotation.z = zrot;
+        tmp1.rotation.x = xrot;
+        tmp1.position.x = vertex.x;
+        tmp1.position.y = vertex.y;
+        tmp1.position.z = vertex.z;
+        comp_obj.add(tmp1);
+    }
+    return comp_obj;
+}
+
+function group2objComponents(comp_group, dim_scale,n_comp,rad_min,rad_max,random){
+    comp_obj = new THREE.Object3D();
+    comp_mesh = new THREE.Object3D();
+    n_mesh = comp_group.children[0].children.length;
+    for (i=0;i<n_mesh;i++){comp_mesh.add(comp_group.children[0].children[i].clone());};
+        comp_mesh.scale.x=dim_scale;
+    comp_mesh.scale.y=dim_scale;
+    comp_mesh.scale.z=dim_scale;
+    for (i=0; i < n_comp; i++){
+        tmp1 = comp_mesh.clone();
+        if (random == 1){
+            rad = Math.random()*(rad_max-rad_min)+rad_min;
+            phi = Math.random()*Math.PI;
+            theta = Math.random()*2*Math.PI;
+            tmp1.position.x = rad*Math.cos(phi);
+            tmp1.position.y = rad*Math.sin(phi)*Math.sin(theta);
+            tmp1.position.z = rad*Math.sin(phi)*Math.cos(theta);
+            tmp1.rotation.z = Math.random()*2*Math.PI;
+            tmp1.rotation.x = Math.random()*Math.PI;
+        }
+        comp_obj.add(tmp1);
+    }
+    return comp_obj;
+}
+
+function makeLysineTree(angle,branches,dim_scale) {
     branch = new THREE.Object3D();
     var level;
-    var x_dist = -8.45
-    var y_dist = 0.7
+    var x_dist = -8.45*dim_scale;
+    var y_dist = 0.7*dim_scale;
+
     lysine_i = lysine_group.children[0].children[0].clone();
+    lysine_i.scale.set(dim_scale,dim_scale,dim_scale);
+
+    lysine_i2 = lysine_i.clone();
+    lysine_base = lysine_i.clone();
+
     lysine_i.rotation.z = -angle*Math.PI/180;
     lysine_i.rotation.x = Math.PI/2
+    lysine_i.position.y = -y_dist;
+    lysine_i.position.x = -x_dist;
 
-    lysine_i.position.y = -y_dist;      lysine_i.position.x = -x_dist
-    lysine_i2 = lysine_group.children[0].children[0].clone();
     lysine_i2.rotation.z = angle*Math.PI/180;
     lysine_i2.rotation.x = Math.PI/2;
     lysine_i2.position.y = y_dist;
     lysine_i2.position.x = -x_dist
-    lysine_base = lysine_group.children[0].children[0].clone();
+
     branch.add(lysine_i);
     branch.add(lysine_i2);
     branch.add(lysine_base);
@@ -469,30 +446,36 @@ function makeLysineTree() {
         branch.add(tmp1);
         branch.add(tmp2);
         branch.add(base);
-
     }
-//      scene.add(branch)
-return branch;
+
+    return branch;
 }
-function applyLysineTrees(branch){
+
+
+function applyLysine(angle,branches,dim_scale,ico_detail,radius){
+    branch = makeLysineTree(angle,branches,dim_scale);
+
     branchParent = new THREE.Object3D()
-    ico_detail = 1;
-    radius = 10;
     ico_geo = new THREE.IcosahedronGeometry(radius,ico_detail);
     vertices = ico_geo.vertices;
     n_vert = vertices.length;
+
     for (i=0; i< n_vert; i++){
         vertex = vertices[i];
         xrot = Math.atan2(vertex.z,vertex.y);
         zrot = Math.atan2(Math.sqrt(radius*radius - (vertex.x*vertex.x)),vertex.x);
+
         tmp1 = branch.clone();
+
         tmp1.rotation.z = zrot;
         tmp1.rotation.x = xrot;
         tmp1.position.x = vertex.x;
         tmp1.position.y = vertex.y;
         tmp1.position.z = vertex.z;
+
         branchParent.add(tmp1);
     }
+
     return branchParent;
 }
 
@@ -536,7 +519,26 @@ function render() {
             effectController.Nitro !== nitroB ||
             effectController.Mucin !== mucB ||
             effectController.mrv !== mrvB ||
-            effectController.Glyoxyl !== glyoxylB )
+            effectController.Glyoxyl !== glyoxylB ||
+            effectController.pegscale !== peg_scale ||
+            effectController.pegico !== peg_ico ||
+            effectController.psmascale !== psma_scale ||
+            effectController.psmaico !== psma_ico ||
+            effectController.shellrad !== shell_rad ||
+            effectController.lysineangle !== lysine_angle ||
+            effectController.lysinebranches !== lysine_branches ||
+            effectController.lysinescale !== lysine_scale ||
+            effectController.lysineico !== lysine_ico ||
+            effectController.spionradius !== spion_radius ||
+            effectController.nnitro !== n_nitro ||
+            effectController.nmuc !== n_muc ||
+            effectController.nmrv !== n_mrv ||
+            effectController.nglyoxyl !== n_glyoxyl ||
+            effectController.snitro !== s_nitro ||
+            effectController.smuc !== s_muc ||
+            effectController.smrv !== s_mrv ||
+            effectController.sglyoxyl !== s_glyoxyl )
+
     {
         psmaB = effectController.PSMA;
         pegB = effectController.PEG;
@@ -546,53 +548,29 @@ function render() {
         mucB = effectController.Mucin;
         mrvB = effectController.mrv;
         glyoxylB = effectController.Glyoxyl;
+        peg_scale = effectController.pegscale;
+        peg_ico = effectController.pegico;
+        psma_scale = effectController.psmascale;
+        psma_ico = effectController.psmaico;
+        shell_rad = effectController.shellrad;
+        lysine_angle = effectController.lysineangle;
+        lysine_branches = effectController.lysinebranches;
+        lysine_scale = effectController.lysinescale;
+        lysine_ico = effectController.lysineico;
+        spion_radius = effectController.spionradius;
+        n_nitro = effectController.nnitro;
+        n_muc = effectController.nmuc;
+        n_mrv = effectController.nmrv;
+        n_glyoxyl = effectController.nglyoxyl;
+        s_nitro = effectController.snitro;
+        s_muc = effectController.smuc;
+        s_mrv = effectController.smrv;
+        s_glyoxyl = effectController.sglyoxyl;
+
 
         createNewDendrimer();
     }
 
-    function createNewDendrimer(){
-        scene.remove(dendrimer);
-        dendrimer = new THREE.Object3D();
-
-        if (pegB == true){dendrimer.add(pegshell);};
-        if (psmaB == true){dendrimer.add(psma_shell);};
-        if (spionB == true){dendrimer.add(spion_core);};
-        if (nitroB == true){dendrimer.add(nitro_obj);};
-        if (mucB == true){dendrimer.add(muc_obj);};
-        if (mrvB == true){dendrimer.add(mrv_obj);};
-        if (glyoxylB == true){dendrimer.add(glyoxyl_obj);};
-        if (lysineB == true){
-            branch = makeLysineTree();
-            branchParent = applyLysineTrees(branch);
-            dendrimer.add(branchParent);
-        }
-        scene.add(dendrimer);
-    }
-    //camera.position.x = Math.cos( timer ) * 17;
-    //camera.position.y = 10;
-    //camera.position.z = Math.sin( timer ) * 17;
-    //camera.lookAt(scene.position)
-    //  particleLight.position.x = Math.sin( timer * 4 ) * 3009;
-    //  particleLight.position.y = Math.cos( timer * 5 ) * 4000;
-    //  particleLight.position.z = Math.cos( timer * 4 ) * 3009;
     renderer.render(scene, camera);
-}
-
-function addToScene() {
-    //  scene.add(lysine);
 
 }
-
-
-/*try {
-
-        init();
-        animate();
-
-
-
-} catch (e) {
-    var errorReport = "Your program encountered an unrecoverable error, can not draw on canvas. Error was:<br/><br/>";
-    $('#container').append(errorReport + e);
-}
-*/
