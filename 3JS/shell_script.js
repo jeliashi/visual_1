@@ -253,7 +253,9 @@ function init() {
     }
     function makePEGShell(){
         pegshell = new THREE.Object3D();
-        peg_mesh = peg_group.children[0].children[0].clone();
+        peg_mesh = new THREE.Object3D();
+        n_mesh = peg_group.children[0].children.length;
+        for (i=0;i<n_mesh;i++){peg_mesh.add(peg_group.children[0].children[i].clone())};
         peg_mesh.scale.x=0.1;
         peg_mesh.scale.y = 0.1;
         peg_mesh.scale.z = 0.1;
