@@ -51,7 +51,7 @@ s_nitro = 1;
 s_muc = 1;
 s_mrv = 1;
 s_glyoxyl = 1;
-var object_path = 'https://cdn.rawgit.com/jeliashi/visual_1/025ae573/3JS/objects/';
+var object_path = 'https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/objects/';
 var onProgress = function (xhr) {
     if (xhr.lengthComputable) {
         var percentComplete = xhr.loaded / xhr.total * 100;
