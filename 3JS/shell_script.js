@@ -5,6 +5,7 @@ var container, stats;
 //var spion = new THREE.Object3D();
 //var lysine = new THREE.Object3D();
 // newmesh = lysine_group.children[0].children[0].clone();
+var peg_group = new THREE.Group();
 var psma_group = new THREE.Group();
 var nitro_group = new THREE.Group();
 var muc_group = new THREE.Group();
@@ -50,140 +51,152 @@ s_nitro = 1;
 s_muc = 1;
 s_mrv = 1;
 s_glyoxyl = 1;
-
-
+var object_path = 'https://cdn.rawgit.com/jeliashi/visual_1/ee32d53c/3JS/objects/';
+var onProgress = function (xhr) {
+    if (xhr.lengthComputable) {
+        var percentComplete = xhr.loaded / xhr.total * 100;
+        console.log(Math.round(percentComplete, 2) + '% downloaded');
+    }
+};
+var onError = function (xhr) {};
 THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
 function return_PEG_group(){
-    var peg_group = new THREE.Group();
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+
+        mtlLoader.setPath(object_path);
         mtlLoader.load('peg.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+            objLoader.setPath(object_path);
             objLoader.load('peg.obj', function (object) {
                 peg_group.add(object);
                 return_PSMA_group();
-            });
+            }, onProgress, onError );
         });
-    return peg_group;
-}
-var peg_group = return_PEG_group();
+    }
 
 function return_PSMA_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+
+        mtlLoader.setPath(object_path);
         mtlLoader.load('psma.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+            objLoader.setPath(object_path);
             objLoader.load('psma.obj', function (object) {
                 psma_group.add(object);
 
                 return_nitro_group();
-            });
+            }, onProgress, onError );
         });
 
 }
 
 function return_nitro_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+
+        mtlLoader.setPath(object_path);
         mtlLoader.load('nitro.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+            objLoader.setPath(object_path);
             objLoader.load('nitro.obj', function (object) {
                 nitro_group.add(object);
 
                 return_muc_group();
-            });
+            }, onProgress, onError );
         });
 }
 function return_muc_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+
+        mtlLoader.setPath(object_path);
         mtlLoader.load('muc.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+            objLoader.setPath(object_path);
             objLoader.load('muc.obj', function (object) {
                 muc_group.add(object);
 
                 return_3mrv_group();
-            });
+            }, onProgress, onError );
         });
 }
 function return_3mrv_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+
+        mtlLoader.setPath(object_path);
         mtlLoader.load('3mrv.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+            objLoader.setPath(object_path);
             objLoader.load('3mrv.obj', function (object) {
                 mrv_group.add(object);
 
                 return_glyoxyl_group();
-            });
+            }, onProgress, onError );
         });
 }
 function return_glyoxyl_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+
+        mtlLoader.setPath(object_path);
         mtlLoader.load('glyoxyl.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+            objLoader.setPath(object_path);
             objLoader.load('glyoxyl.obj', function (object) {
                 glyoxyl_group.add(object);
 
                 return_lysine_group();
-            });
+            }, onProgress, onError );
         });
 }
 function return_lysine_group(){
         var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+
+        mtlLoader.setPath(object_path);
         mtlLoader.load('lysine.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+            objLoader.setPath(object_path);
             objLoader.load('lysine.obj', function (object) {
                 lysine_group.add(object);
                 return_spion_group();
-            });
+            }, onProgress, onError );
         });
 }
 function return_spion_group(){
     var mtlLoader = new THREE.MTLLoader();
-        mtlLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+
+        mtlLoader.setPath(object_path);
         mtlLoader.load('spion_core.mtl', function (materials) {
             materials.preload();
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
 
-            objLoader.setPath('https://rawgit.com/jeliashi/visual_1/master/3JS/objects/');
+            objLoader.setPath(object_path);
             objLoader.load('spion_core.obj', function (object) {
                 spion_group.add(object);
                 init();
-            });
+            }, onProgress, onError );
         });
 }
+return_PEG_group();
 
 function init() {
     container = document.createElement('div');
@@ -271,7 +284,7 @@ function init() {
             psmaico: 1,
             shellrad: 65,
 
-            lysineangle: 30,
+            lysineangle: 15,
             lysinebranches: 6,
             lysinescale: 1,
             lysineico: 1,
@@ -344,7 +357,7 @@ function createNewDendrimer(){
     if (psmaB == true){dendrimer.add(group2objSurface(psma_group,0.1,1,shell_rad+5*psma_scale));};
     if (spionB == true){dendrimer.add(group2objComponents(spion_group,0.075*spion_radius/10,1,0,0,0));};
     if (nitroB == true){dendrimer.add(group2objComponents(nitro_group,0.1*s_nitro,n_nitro,spion_radius,shell_rad-5*s_nitro,1));};
-    if (mucB == true){dendrimer.add(group2objComponents(muc_group,0.1*s_muc,n_muc,spion_radius,shell_rad-5*s_muc,1));};
+    if (mucB == true){dendrimer.add(group2objComponents(muc_group,1.0*s_muc,n_muc,spion_radius,shell_rad-5*s_muc,1));};
     if (mrvB == true){dendrimer.add(group2objComponents(mrv_group,1.0*s_mrv,n_mrv,spion_radius,shell_rad-5*s_mrv,1));};
     if (glyoxylB == true){dendrimer.add(group2objComponents(glyoxyl_group,1.0*s_glyoxyl,n_glyoxyl,spion_radius,shell_rad-5*s_glyoxyl,1));};
     if (lysineB == true){dendrimer.add(applyLysine(lysine_angle,lysine_branches,lysine_scale,lysine_ico,spion_radius));};
