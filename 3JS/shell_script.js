@@ -35,7 +35,7 @@ psma_ico = 1;
 shell_rad = 65;
 
 //Spion/Lysine Geometry
-lysine_angle = 30;
+lysine_angle = 15;
 lysine_branches = 6;
 lysine_scale = 1;
 lysine_ico = 1;
@@ -316,11 +316,11 @@ function init() {
         h = gui.addFolder("Pacakages");
         h.add( effectController,"nnitro",1,200,1).name("# Nitro").onChange( render );
         h.add( effectController,"nmuc",1,200,1).name("# Mucin").onChange( render );
-        h.add( effectController,"nmrv",1,200,1).name("# 3MRV").onChange( render );
+        h.add( effectController,"nmrv",1,200,1).name("# Glycogen").onChange( render );
         h.add( effectController,"nglyoxyl",1,200,1).name("# Glyoxyl").onChange( render );
         h.add( effectController,"snitro",0.1,3,0.1).name("Scale of Nitro").onChange( render );
         h.add( effectController,"smuc",0.1,3,0.1).name("Scale of Mucin").onChange( render );
-        h.add( effectController,"smrv",0.1,3,0.1).name("Scale of Glycogen").onChange( render );
+        h.add( effectController,"smrv",0.1,3,0.1).name("Scale of Glyco").onChange( render );
         h.add( effectController,"sglyoxyl",0.1,3,0.1).name("Scale of Glyoxyl").onChange( render );
 
 
