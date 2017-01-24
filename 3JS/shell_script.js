@@ -278,11 +278,13 @@ function init() {
 
     }
     function makePSMAShell(){
+        psma_Shell =new THRE.Object3D();
         psma_shell = new THREE.Object3D();
-        psma_mesh = psma_group.children[0].children[0].clone();
-        psma_mesh.scale.x = 0.1;
-        psma_mesh.scale.y = 0.1;
-        psma_mesh.scale.z = 0.1;
+        n_mesh = psma_group.children[0].children.length;
+        for (i=0; i < n_mesh; i++){psma_shell.add(psma_group.children[0].children[i].clone());};
+        psma_shell.scale.x = 0.1;
+        psma_shell.scale.y = 0.1;
+        psma_shell.scale.z = 0.1;
         ico_detail = 1;
         radius = 70;
         ico_geo = new THREE.IcosahedronGeometry(radius,ico_detail);
@@ -292,15 +294,15 @@ function init() {
             vertex = vertices[i];
             xrot = Math.atan2(vertex.z,vertex.y);
             zrot = Math.atan2(Math.sqrt(radius*radius - (vertex.x*vertex.x)),vertex.x);
-            tmp1 = psma_mesh.clone();
+            tmp1 = psma_shell.clone();
             tmp1.rotation.z = zrot;
             tmp1.rotation.x = xrot;
             tmp1.position.x = vertex.x;
             tmp1.position.y = vertex.y;
             tmp1.position.z = vertex.z;
-            psma_shell.add(tmp1);
+            psma_Shell.add(tmp1);
         }
-        return psma_shell;
+        return psma_Shell;
 
     }
     function makeSPION(){
