@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    #info {
+                position: absolute;
+                top: 0px; width: 100%;
+                color: #ffffff;
+                padding: 5px;
+                font-family: Monospace;
+                font-size: 13px;
+                text-align: center;
+    body {
+    }
+    canvas {
+        width: 100%;
+        height: 100%
+    }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <p></p>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/build/three.js"></script>
+    <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/loaders/DDSLoader.js"></script>
+    <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/loaders/MTLLoader.js"></script>
+    <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/Detector.js"></script>
+    <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/libs/dat.gui.min.js"></script>
+
+    <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/libs/stats.min.js"></script>
+    <script>
+    var camera, scene, renderer;
+    var cameraControls;
+    var clock = new THREE.Clock();
+    var container, stats;
+
+    var scene = new THREE.Scene();
+//var spion = new THREE.Object3D();
+//var lysine = new THREE.Object3D();
+// newmesh = lysine_group.children[0].children[0].clone();
+
+var object_path = 'https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/objects/';
+var onProgress = function (xhr) {
+    if (xhr.lengthComputable) {
+        var percentComplete = xhr.loaded / xhr.total * 100;
+        console.log(Math.round(percentComplete, 2) + '% downloaded');
+    }
+};
+var onError = function (xhr) {};
+THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+
+function package_group(){
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.crossOrigin = '';
+
+    mtlLoader.setPath(object_path);
+    mtlLoader.load('nitro.mtl', function (materials) {
+        materials.preload();
+        var objLoader = new THREE.OBJLoader();
+        objLoader.crossOrigin = '';
+
+        objLoader.setMaterials(materials);
+
+        objLoader.setPath(object_path);
+        objLoader.load('nitro.obj', function (object) {
+
+            object.scale.set(0.25,0.25,0.25)
+
+            scene.add(object);
+            init();
+        }, onProgress, onError );
+    });
+}
+package_group();
+
+function init() {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    // For grading the window is fixed in size; here's general code:
+    //var canvasWidth = window.innerWidth;
+    //var canvasHeight = window.innerHeight;
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+    camera.position.set(0, 20, 34);
+    var gridHelper = new THREE.GridHelper( 28, 28, 0x303030, 0x303030 );
+    gridHelper.position.set( 0, - 0.04, 0 );
+    scene.add( gridHelper );
+    var size = 14,
+    step = 1;
+
+    var geometry = new THREE.Geometry();
+    var material = new THREE.LineBasicMaterial({
+        color: 0x303030
+    });
+
+
+    particleLight = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), new THREE.MeshBasicMaterial({
+        color: 0x808080
+    }));
+    scene.add(particleLight);
+    // Lights
+    scene.add(new THREE.AmbientLight(0x808080));
+    var directionalLight = new THREE.DirectionalLight( /*Math.random() * 0xffffff*/ 0x808080);
+    directionalLight.position.x = 100;
+    directionalLight.position.y = 65;
+    directionalLight.position.z = -700;
+    directionalLight.position.normalize();
+    scene.add(directionalLight);
+    var pointLight = new THREE.PointLight(0x808080, 4);
+    particleLight.add(pointLight);
+    particleLight.position.set(0, 4000, 3000);
+    renderer = new THREE.WebGLRenderer();
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
+    stats = new Stats();
+    container.appendChild(stats.dom);
+    //
+    window.addEventListener('resize', onWindowResize, false);
+    camera.lookAt(scene.position);
+    cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
+    cameraControls.addEventListener('change', render); // remove when using animation loop
+    //cameraControls.target.set(scene.position);
+
+
+
+
+    animate();
+
+}
+
+
+function group2objComponents(comp_group, dim_scale,n_comp,rad_min,rad_max,random){
+    comp_obj = new THREE.Object3D();
+    comp_mesh = new THREE.Object3D();
+    n_mesh = comp_group.children[0].children.length;
+    for (i=0;i<n_mesh;i++){comp_mesh.add(comp_group.children[0].children[i].clone());};
+        comp_mesh.scale.x=dim_scale;
+    comp_mesh.scale.y=dim_scale;
+    comp_mesh.scale.z=dim_scale;
+    for (i=0; i < n_comp; i++){
+        tmp1 = comp_mesh.clone();
+        if (random == 1){
+            rad = Math.random()*(rad_max-rad_min)+rad_min;
+            phi = Math.random()*Math.PI;
+            theta = Math.random()*2*Math.PI;
+            tmp1.position.x = rad*Math.cos(phi);
+            tmp1.position.y = rad*Math.sin(phi)*Math.sin(theta);
+            tmp1.position.z = rad*Math.sin(phi)*Math.cos(theta);
+            tmp1.rotation.z = Math.random()*2*Math.PI;
+            tmp1.rotation.x = Math.random()*Math.PI;
+        }
+        comp_obj.add(tmp1);
+    }
+    return comp_obj;
+}
+
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+
+function animate() {
+    requestAnimationFrame(animate);
+    render();
+    stats.update();
+    var text2 = document.createElement('div');
+
+}
+var clock = new THREE.Clock();
+
+function addToDOM() {
+    var container = document.getElementById('container');
+    var canvas = container.getElementsByTagName('canvas');
+    if (canvas.length > 0) {
+        container.removeChild(canvas[0]);
+    }
+    container.appendChild(renderer.domElement);
+}
+
+function animate() {
+    window.requestAnimationFrame(animate);
+    cameraControls.update();
+
+    render();
+    var coord = document.getElementById('info');
+    coord.innerHTML = "<p> x:"+camera.position.x+"</p><p> y: "+camera.position.y+"</p><p> z: "+camera.position.z+"</p>";
+}
+
+function render() {
+    var timer = Date.now() * 0.0005;
+    var delta = clock.getDelta();
+
+
+    renderer.render(scene, camera);
+
+}
+</script>
+</body>
+</html>

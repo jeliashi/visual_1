@@ -1,26 +1,821 @@
 <!DOCTYPE html>
 <html>
-        <head>
+    <head>
         <style>
-body {
-}
-canvas {
-    width: 100%;
-    height: 100%
-}
-</style>
-        </head>
-        <body>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="https://cdn.rawgit.com/jeliashi/visual_1/368ed9bb/3JS/three.js-master/build/three.js"></script>
-<script src="https://cdn.rawgit.com/jeliashi/visual_1/368ed9bb/3JS/three.js-master/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.rawgit.com/jeliashi/visual_1/368ed9bb/3JS/three.js-master/examples/js/loaders/DDSLoader.js"></script>
-<script src="https://cdn.rawgit.com/jeliashi/visual_1/368ed9bb/3JS/three.js-master/examples/js/loaders/MTLLoader.js"></script>
-<script src="https://cdn.rawgit.com/jeliashi/visual_1/368ed9bb/3JS/three.js-master/examples/js/loaders/OBJLoader.js"></script>
-<script src="https://cdn.rawgit.com/jeliashi/visual_1/368ed9bb/3JS/three.js-master/examples/js/Detector.js"></script>
-<script src="https://cdn.rawgit.com/jeliashi/visual_1/368ed9bb/3JS/three.js-master/examples/js/libs/dat.gui.min.js"></script>
+        body {
+        }
+        canvas {
+            width: 100%;
+            height: 100%
+        }
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
 
-<script src="https://cdn.rawgit.com/jeliashi/visual_1/368ed9bb/3JS/three.js-master/examples/js/libs/stats.min.js"></script>
-<script src="shell_script.js"></script>
-</body>
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+        .modal-body {
+            background-color: #fefefe;
+            margin: 0% auto; /* 15% from the top and centered */
+            padding: 0px;
+            border: 0px solid #888;
+            width: 100%;
+        }
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  			<div class="modal-content">
+    			<span id="closebutton" class="close">&times;</span>
+    			<div id="innerText" class="modal-body">
+			        <p>Some text in the Modal..</p>
+			    </div>
+			  </div>
+		</div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/build/three.js"></script>
+        <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/controls/OrbitControls.js"></script>
+        <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/loaders/DDSLoader.js"></script>
+        <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/loaders/MTLLoader.js"></script>
+        <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/loaders/OBJLoader.js"></script>
+        <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/Detector.js"></script>
+        <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/libs/dat.gui.min.js"></script>
+        <script src="https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/three.js-master/examples/js/libs/stats.min.js"></script>
+        <script>
+            var camera, scene, renderer;
+            var cameraControls;
+            var clock = new THREE.Clock();
+            var container, stats;
+            var raycaster;
+            var mouse;
+            var objects = [];
+
+    //var spion = new THREE.Object3D();
+    //var lysine = new THREE.Object3D();
+    // newmesh = lysine_group.children[0].children[0].clone();
+            var peg_group = new THREE.Group();
+            var psma_group = new THREE.Group();
+            var nitro_group = new THREE.Group();
+            var muc_group = new THREE.Group();
+            var mrv_group = new THREE.Group();
+            var glyoxyl_group = new THREE.Group();
+            var lysine_group = new THREE.Group();
+            var spion_group = new THREE.Group();
+
+            var dendrimer = new THREE.Object3D();
+
+            var effectController;
+
+            var time_diff = clock.getElapsedTime;
+
+            //Wedge
+            wedB = true;
+
+            //Presence of Objects
+            pegB = true;
+            psmaB = true;
+            nitroB = true;
+            mucB = true;
+            mrvB = true;
+            glyoxylB = true;
+            lysineB = false;
+            spionB = true;
+
+            //Shell Geometries
+            peg_scale = 1;
+            peg_ico = 4;
+            psma_scale = 1;
+            psma_ico = 1;
+            shell_rad = 65;
+
+            //Spion/Lysine Geometry
+            lysine_angle = 15;
+            lysine_branches = 6;
+            lysine_scale = 1;
+            lysine_ico = 1;
+            spion_radius = 10;
+
+            //Package numbers
+            n_nitro = 50;
+            n_muc = 50;
+            n_mrv = 50;
+            n_glyoxyl = 50;
+            s_nitro = 1;
+            s_muc = 1;
+            s_mrv = 1;
+            s_glyoxyl = 1;
+
+            //Camera Controls
+            rotB = false;
+            rotSpeed = .1; //rpm
+
+            var object_path = 'https://cdn.rawgit.com/jeliashi/visual_1/034907a7/3JS/objects/';
+            //var object_path = 'objects/';
+            var onProgress = function (xhr) {
+                if (xhr.lengthComputable) {
+                    var percentComplete = xhr.loaded / xhr.total * 100;
+                    console.log(Math.round(percentComplete, 2) + '% downloaded');
+                }
+            };
+            var onError = function (xhr) {};
+            THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+            function return_PEG_group(){
+                var mtlLoader = new THREE.MTLLoader();
+                mtlLoader.crossOrigin = '';
+                mtlLoader.setPath(object_path);
+                mtlLoader.load('peg.mtl', function (materials) {
+                    materials.preload();
+                    var objLoader = new THREE.OBJLoader();
+                    objLoader.crossOrigin = '';
+                    objLoader.setMaterials(materials);
+
+                    objLoader.setPath(object_path);
+                    objLoader.load('peg.obj', function (object) {
+                        peg_group.add(object);
+                        return_PSMA_group();
+                    }, onProgress, onError );
+                });
+            }
+
+            function return_PSMA_group(){
+                var mtlLoader = new THREE.MTLLoader();
+                mtlLoader.crossOrigin = '';
+
+                mtlLoader.setPath(object_path);
+                mtlLoader.load('psma.mtl', function (materials) {
+                    materials.preload();
+                    var objLoader = new THREE.OBJLoader();
+                    objLoader.crossOrigin = '';
+
+                    objLoader.setMaterials(materials);
+
+                    objLoader.setPath(object_path);
+                    objLoader.load('psma.obj', function (object) {
+                        psma_group.add(object);
+
+                        return_nitro_group();
+                    }, onProgress, onError );
+                });
+
+            }
+
+            function return_nitro_group(){
+                var mtlLoader = new THREE.MTLLoader();
+                mtlLoader.crossOrigin = '';
+
+                mtlLoader.setPath(object_path);
+                mtlLoader.load('nitro.mtl', function (materials) {
+                    materials.preload();
+                    var objLoader = new THREE.OBJLoader();
+                    objLoader.crossOrigin = '';
+
+                    objLoader.setMaterials(materials);
+
+                    objLoader.setPath(object_path);
+                    objLoader.load('nitro.obj', function (object) {
+                        nitro_group.add(object);
+
+                        return_muc_group();
+                    }, onProgress, onError );
+                });
+            }
+            function return_muc_group(){
+                var mtlLoader = new THREE.MTLLoader();
+                mtlLoader.crossOrigin = '';
+
+                mtlLoader.setPath(object_path);
+                mtlLoader.load('muc.mtl', function (materials) {
+                    materials.preload();
+                    var objLoader = new THREE.OBJLoader();
+                    objLoader.crossOrigin = '';
+
+                    objLoader.setMaterials(materials);
+
+                    objLoader.setPath(object_path);
+                    objLoader.load('muc.obj', function (object) {
+                        muc_group.add(object);
+
+                        return_3mrv_group();
+                    }, onProgress, onError );
+                });
+            }
+            function return_3mrv_group(){
+                var mtlLoader = new THREE.MTLLoader();
+                mtlLoader.crossOrigin = '';
+
+                mtlLoader.setPath(object_path);
+                mtlLoader.load('3mrv.mtl', function (materials) {
+                    materials.preload();
+                    var objLoader = new THREE.OBJLoader();
+                    objLoader.crossOrigin = '';
+
+                    objLoader.setMaterials(materials);
+
+                    objLoader.setPath(object_path);
+                    objLoader.load('3mrv.obj', function (object) {
+                        mrv_group.add(object);
+
+                        return_glyoxyl_group();
+                    }, onProgress, onError );
+                });
+            }
+            function return_glyoxyl_group(){
+                var mtlLoader = new THREE.MTLLoader();
+                mtlLoader.crossOrigin = '';
+
+                mtlLoader.setPath(object_path);
+                mtlLoader.load('glyoxyl.mtl', function (materials) {
+                    materials.preload();
+                    var objLoader = new THREE.OBJLoader();
+                    objLoader.crossOrigin = '';
+
+                    objLoader.setMaterials(materials);
+
+                    objLoader.setPath(object_path);
+                    objLoader.load('glyoxyl.obj', function (object) {
+                        glyoxyl_group.add(object);
+
+                        return_lysine_group();
+                    }, onProgress, onError );
+                });
+            }
+            function return_lysine_group(){
+                var mtlLoader = new THREE.MTLLoader();
+                mtlLoader.crossOrigin = '';
+
+                mtlLoader.setPath(object_path);
+                mtlLoader.load('lysine.mtl', function (materials) {
+                    materials.preload();
+                    var objLoader = new THREE.OBJLoader();
+                    objLoader.crossOrigin = '';
+
+                    objLoader.setMaterials(materials);
+
+                    objLoader.setPath(object_path);
+                    objLoader.load('lysine.obj', function (object) {
+                        lysine_group.add(object);
+                        return_spion_group();
+                    }, onProgress, onError );
+                });
+            }
+            function return_spion_group(){
+                var mtlLoader = new THREE.MTLLoader();
+                mtlLoader.crossOrigin = '';
+
+                mtlLoader.setPath(object_path);
+                mtlLoader.load('spion_core.mtl', function (materials) {
+                    materials.preload();
+                    var objLoader = new THREE.OBJLoader();
+                    objLoader.crossOrigin = '';
+
+                    objLoader.setMaterials(materials);
+
+                    objLoader.setPath(object_path);
+                    objLoader.load('spion_core.obj', function (object) {
+                        spion_group.add(object);
+                        init();
+                    }, onProgress, onError );
+                });
+            }
+            return_PEG_group();
+
+
+            function init() {
+                container = document.createElement('div');
+                document.body.appendChild(container);
+                // For grading the window is fixed in size; here's general code:
+                //var canvasWidth = window.innerWidth;
+                //var canvasHeight = window.innerHeight;
+                camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+                camera.position.set(113,113, 113);
+
+                scene = new THREE.Scene();
+                var size = 14,
+                step = 1;
+
+                var geometry = new THREE.Geometry();
+                var material = new THREE.LineBasicMaterial({
+                    color: 0x303030
+                });
+
+
+                var onProgress = function (xhr) {
+                    if (xhr.lengthComputable) {
+                        var percentComplete = xhr.loaded / xhr.total * 100;
+                        console.log(Math.round(percentComplete, 2) + '% downloaded');
+                    }
+                };
+                var onError = function (xhr) {};
+                fillScene();
+                raycaster = new THREE.Raycaster();
+                mouse = new THREE.Vector2();
+
+
+                particleLight = new THREE.Mesh(new THREE.SphereGeometry(4, 8, 8), new THREE.MeshBasicMaterial({
+                    color: 0x808080
+                }));
+                scene.add(particleLight);
+                // Lights
+                scene.add(new THREE.AmbientLight(0x808080));
+                var directionalLight = new THREE.DirectionalLight( /*Math.random() * 0xffffff*/ 0x808080);
+                directionalLight.position.x = 100;
+                directionalLight.position.y = 65;
+                directionalLight.position.z = -700;
+                directionalLight.position.normalize();
+                scene.add(directionalLight);
+                var pointLight = new THREE.PointLight(0x808080, 4);
+                particleLight.add(pointLight);
+                particleLight.position.set(0, 4000, 3000);
+                renderer = new THREE.WebGLRenderer();
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                container.appendChild(renderer.domElement);
+                stats = new Stats();
+                container.appendChild( stats.dom );
+                //
+                window.addEventListener('resize', onWindowResize, false);
+                camera.lookAt(scene.position);
+                cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
+                cameraControls.addEventListener('change', render); // remove when using animation loop
+                cameraControls.autoRotate = rotB;
+
+                cameraControls.autoRotateSpeed = -25.0;
+                setupGui();
+                //cameraControls.target.set(scene.position);
+                var gridHelper = new THREE.GridHelper( 28, 28, 0x303030, 0x303030 );
+                gridHelper.position.set( 0, - 0.04, 0 );
+                gridHelper.scale.set(5,5,5);
+                scene.add( gridHelper );
+
+                document.addEventListener( 'mousedown', onDocumentMouseDown, false);
+                document.addEventListener('contextmenu',event => event.preventDefault());
+
+
+                function setupGui(){
+                    effectController = {
+                        wedge: true,
+
+                        PSMA: true,
+                        PEG: true,
+                        Lysine: false,
+                        SPION: true,
+                        Nitro: true,
+                        Mucin: true,
+                        mrv: true,
+                        Glyoxyl: true,
+
+                        pegscale: 1,
+                        pegico: 4,
+                        psmascale: 1,
+                        psmaico: 1,
+                        shellrad: 65,
+
+                        lysineangle: 15,
+                        lysinebranches: 6,
+                        lysinescale: 1,
+                        lysineico: 1,
+                        spionradius: 10,
+
+                        nnitro: 50,
+                        nmuc: 50,
+                        nmrv: 50,
+                        nglyoxyl: 50,
+                        snitro: 1,
+                        smuc: 1,
+                        smrv: 1,
+                        sglyoxyl: 1,
+
+                        rot: .1
+                    };
+                    var h;
+                    var gui = new dat.GUI();
+                    h = gui.addFolder("Cut");
+                    h.add( effectController,"wedge").name("Cut in Shell?").onChange(render)
+                    h= gui.addFolder("Add/Remove Components");
+                    h.add( effectController,"PSMA").name("Targetting Ligand").onChange(render );
+                    h.add( effectController,"PEG").name("PEG Shell").onChange(render);
+                    h.add( effectController,"Lysine").name("Lysine matrix").onChange(render);
+                    h.add( effectController,"SPION").name("SPION Core").onChange(render);
+                    h.add( effectController,"Nitro").name("False Protein Package").onChange(render);
+                    h.add( effectController,"Mucin").name("Mucin Package").onChange(render);
+                    h.add( effectController,"mrv").name("Stain Package").onChange(render);
+                    h.add( effectController,"Glyoxyl").name("Acid Catalyst Package").onChange(render);
+
+                    h = gui.addFolder("Shell Geometry");
+                    h.add( effectController,"pegscale",0.1,2.0,0.1).name("Scale Shell Component").onChange(render );
+                    h.add( effectController,"pegico",0,6,1).name("Shell Ico Detail").onChange(render );
+                    h.add( effectController,"psmascale",0.1,2.0,0.1).name("Scale Target Component").onChange(render );
+                    h.add( effectController,"psmaico",0,3,1).name("Targetting Ico Detail").onChange(render );
+                    h.add( effectController,"shellrad",45,100,5.0).name("Shell Radius (um)").onChange(render );
+
+                    h = gui.addFolder("SPION/Lysine Geometry");
+                    h.add( effectController,"lysineangle",5,70,5).name("Inter-Lys Ang").onChange( render );
+                    h.add( effectController,"lysinebranches",1,10,1).name("Lysine Branches").onChange( render );
+                    h.add( effectController,"lysinescale",0.1,2,0.1).name("Lysine Scale").onChange( render );
+                    h.add( effectController,"lysineico",0,4,1).name("Lysine Ico Detail").onChange( render );
+                    h.add( effectController,"spionradius",2,30,1).name("SPION Radius").onChange( render );
+
+                    h = gui.addFolder("Packages");
+                    h.add( effectController,"nnitro",1,200,1).name("# Fale Protein").onChange( render );
+                    h.add( effectController,"nmuc",1,200,1).name("# Mucin").onChange( render );
+                    h.add( effectController,"nmrv",1,200,1).name("# Stain").onChange( render );
+                    h.add( effectController,"nglyoxyl",1,200,1).name("# Acid Catalyst").onChange( render );
+                    h.add( effectController,"snitro",0.1,3,0.1).name("Scale of False Protein").onChange( render );
+                    h.add( effectController,"smuc",0.1,3,0.1).name("Scale of Mucin").onChange( render );
+                    h.add( effectController,"smrv",0.1,3,0.1).name("Scale of Stain").onChange( render );
+                    h.add( effectController,"sglyoxyl",0.1,3,0.1).name("Scale of Acid Catalyst").onChange( render );
+
+                    h = gui.addFolder("Rotation Controls");
+                    h.add( effectController,"rot", .1, 5, 0.1).name("Rotations/sec").onChange(render);
+
+
+                }
+
+                animate();
+
+            }
+
+            function fillScene() {
+
+                createNewDendrimer();
+
+            }
+            function createNewDendrimer(){
+                objects = [];
+                scene.remove(dendrimer);
+                dendrimer = new THREE.Object3D();
+
+                if (pegB == true){dendrimer.add(group2objSurface(peg_group,0.1*peg_scale,peg_ico,shell_rad,'PEG'));};
+                if (psmaB == true){dendrimer.add(group2objSurface(psma_group,0.1,1,shell_rad+5*psma_scale,'targetting'));};
+                if (spionB == true){dendrimer.add(group2objComponents(spion_group,0.075*spion_radius/10,1,0,0,0,'core'));};
+                if (nitroB == true){dendrimer.add(group2objComponents(nitro_group,0.1*s_nitro,n_nitro,spion_radius,shell_rad-5*s_nitro,1,'false_protein'));};
+                if (mucB == true){dendrimer.add(group2objComponents(muc_group,1.0*s_muc,n_muc,spion_radius,shell_rad-5*s_muc,1,'mucin'));};
+                if (mrvB == true){dendrimer.add(group2objComponents(mrv_group,1.0*s_mrv,n_mrv,spion_radius,shell_rad-5*s_mrv,1,'stain'));};
+                if (glyoxylB == true){dendrimer.add(group2objComponents(glyoxyl_group,1.0*s_glyoxyl,n_glyoxyl,spion_radius,shell_rad-5*s_glyoxyl,1,'catalyst'));};
+                if (lysineB == true){dendrimer.add(applyLysine(lysine_angle,lysine_branches,lysine_scale,lysine_ico,spion_radius,'network'));};
+                scene.add(dendrimer);
+            }
+
+            function group2objSurface(comp_group, dim_scale, ico_detail, radius,name){
+                comp_obj = new THREE.Object3D();
+                comp_mesh = new THREE.Object3D();
+                n_mesh = comp_group.children[0].children.length;
+                for (i=0;i<n_mesh;i++){
+                    comp_group.children[0].children[i].name = name;
+
+                    comp_mesh.add(comp_group.children[0].children[i].clone());
+                };
+                    comp_mesh.scale.set(dim_scale,dim_scale,dim_scale);
+                ico_geo = new THREE.IcosahedronGeometry(radius,ico_detail);
+                vertices = ico_geo.vertices;
+                n_vert = vertices.length;
+
+                for (i=0;i<n_vert;i++){
+                    vertex = vertices[i];
+                    xrot = Math.atan2(vertex.z,vertex.y);
+                    zrot = Math.atan2(Math.sqrt(radius*radius - (vertex.x*vertex.x)),vertex.x);
+                    tmp1 = comp_mesh.clone();
+                    tmp1.rotation.z = zrot;
+                    tmp1.rotation.x = xrot;
+                    tmp1.position.x = vertex.x;
+                    tmp1.position.y = vertex.y;
+                    tmp1.position.z = vertex.z;
+                    if (!wedB || (vertex.x<0 || vertex.y< 0 || vertex.z < 0)) {comp_obj.add(tmp1);}
+                }
+                return comp_obj;
+            }
+
+            function group2objComponents(comp_group, dim_scale,n_comp,rad_min,rad_max,random,name){
+                comp_obj = new THREE.Object3D();
+                comp_mesh = new THREE.Object3D();
+                n_mesh = comp_group.children[0].children.length;
+                for (i=0;i<n_mesh;i++){
+                    comp_group.children[0].children[i].name = name;
+                    comp_mesh.add(comp_group.children[0].children[i].clone());
+                };
+                    comp_mesh.scale.x=dim_scale;
+                comp_mesh.scale.y=dim_scale;
+                comp_mesh.scale.z=dim_scale;
+                for (i=0; i < n_comp; i++){
+                    tmp1 = comp_mesh.clone();
+                    if (random == 1){
+
+                        x = (Math.random()-.5)*2*rad_max;
+                        y = (Math.random()-.5)*2*rad_max;
+                        z = (Math.random()-.5)*2*rad_max;
+                        r = Math.sqrt(x*x+y*y+z*z);
+                        while (r > rad_max || r < rad_min){
+                            x = (Math.random()-.5)*2*rad_max;
+                            y = (Math.random()-.5)*2*rad_max;
+                            z = (Math.random()-.5)*2*rad_max;
+                            r = Math.sqrt(x*x+y*y+z*z);
+                        }
+                        tmp1.position.x = x
+                        tmp1.position.y = y
+                        tmp1.position.z = z
+                        tmp1.rotation.z = Math.random()*2*Math.PI;
+                        tmp1.rotation.x = Math.random()*Math.PI;
+                    }
+                    comp_obj.add(tmp1);
+                }
+
+                return comp_obj;
+            }
+
+            function makeLysineTree(angle,branches,dim_scale,name) {
+                branch = new THREE.Object3D();
+                var level;
+                var x_dist = -8.45*dim_scale;
+                var y_dist = 0.7*dim_scale;
+
+                lysine_i = lysine_group.children[0].children[0].clone();
+                lysine_i.name = 'Lysine_cid5962_1_line';
+                lysine_i.scale.set(dim_scale,dim_scale,dim_scale);
+
+                lysine_i2 = lysine_i.clone();
+                lysine_base = lysine_i.clone();
+
+                lysine_i.rotation.z = -angle*Math.PI/180;
+                lysine_i.rotation.x = Math.PI/2
+                lysine_i.position.y = -y_dist;
+                lysine_i.position.x = -x_dist;
+
+                lysine_i2.rotation.z = angle*Math.PI/180;
+                lysine_i2.rotation.x = Math.PI/2;
+                lysine_i2.position.y = y_dist;
+                lysine_i2.position.x = -x_dist
+
+                branch.add(lysine_i);
+                branch.add(lysine_i2);
+                branch.add(lysine_base);
+
+
+
+                for (level = 0; level < branches-1; level++) {
+
+                    tmp1 = branch.clone(true);
+                    tmp2 = branch.clone(true);
+                    base = lysine_group.children[0].children[0].clone();
+                    delete branch;
+                    tmp1.rotation.z = -angle*Math.PI/180;
+                    tmp1.rotation.x = Math.PI/2;
+
+                    tmp1.position.y = -y_dist;
+                    tmp1.position.x = -x_dist;
+                    tmp2.rotation.z = angle*Math.PI/180;
+                    tmp2.rotation.x = Math.PI/2;
+
+                    tmp2.position.y = y_dist;
+                    tmp2.position.x = -x_dist;
+                    branch = new THREE.Object3D();
+                    branch.add(tmp1);
+                    branch.add(tmp2);
+                    branch.add(base);
+                }
+
+                return branch;
+            }
+
+
+            function applyLysine(angle,branches,dim_scale,ico_detail,radius,name){
+                branch = makeLysineTree(angle,branches,dim_scale,name);
+
+                branchParent = new THREE.Object3D()
+                ico_geo = new THREE.IcosahedronGeometry(radius,ico_detail);
+                vertices = ico_geo.vertices;
+                n_vert = vertices.length;
+
+                for (i=0; i< n_vert; i++){
+                    vertex = vertices[i];
+                    xrot = Math.atan2(vertex.z,vertex.y);
+                    zrot = Math.atan2(Math.sqrt(radius*radius - (vertex.x*vertex.x)),vertex.x);
+
+                    tmp1 = branch.clone();
+
+                    tmp1.rotation.z = zrot;
+                    tmp1.rotation.x = xrot;
+                    tmp1.position.x = vertex.x;
+                    tmp1.position.y = vertex.y;
+                    tmp1.position.z = vertex.z;
+
+                    branchParent.add(tmp1);
+                }
+                return branchParent;
+            }
+
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            function onDocumentMouseDown(event) {
+                mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+                mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+                raycaster.setFromCamera(mouse,camera);
+                var intersects = raycaster.intersectObjects( scene.children ,true);
+
+                if (event.button == 0) {
+
+                        if (modal.style.display == "block") {
+
+                                if (event.target.id == "closebutton"){modal.style.display = "none";}
+
+                        }
+                        else{
+                        if (intersects.length > 0 ){
+                            if (rotB == true){
+                                rotB = false;
+                                cameraControls.autoRotate = false;
+                            }
+                            else {
+                                rotB = true;
+                                cameraControls.autoRotate = true;
+                            }
+                        }}
+                }
+                if (event.button == 2){
+                        console.log(intersects[0].object.name);
+
+                        rotB = false;
+                        cameraControls.autoRotate = false;
+                        var intersects = raycaster.intersectObjects( scene.children, true);
+                        if (intersects.length  > 0){
+                            infoBox(intersects[0].object.name,event);
+                        }
+
+                }
+            }
+
+
+
+            function infoBox(obj_name,event){
+                event.preventDefault();
+                if (obj_name === 'PEG'){
+                    text = "";
+                    link = "http://www.cadenpro.com/peg";
+                }
+                if (obj_name === 'targetting'){
+                    text = "";
+                    link = "http://www.cadenpro.com/targeting-matrix";
+
+                }
+                if (obj_name === 'core'){
+                    text = "";
+                    link = "http://www.cadenpro.com/spion";
+                }
+                if (obj_name === 'Lysine_cid5962_1_line'){
+                    text = "";
+                    link = "http://www.cadenpro.com/lysine";
+               }
+               if (obj_name === 'stain'){
+                    text = "";
+                    link = "http://www.cadenpro.com/glycogen";
+                }
+                if (obj_name === 'false_protein'){
+                    text = "";
+                    link = "http://www.cadenpro.com/nitro";
+                }
+                if (obj_name === 'mucin'){
+                    text = "";
+                    link = "http://www.cadenpro.com/mucin";
+                }
+                if (obj_name === 'catalyst'){
+                    text = "";
+                    link = "http://www.cadenpro.com/glyoxyl";
+                }
+                Hyperlink = '<a href="'+link+'" target="_blank">More Information Here</a>';
+                full_text = "<p>" + text + " " + obj_name + "</p><p>"+Hyperlink+"</p>";
+
+                mod_bod.innerHTML= full_text
+                modal.style.display = "block";
+                /* Change text and insert link! */
+            }
+
+
+            function animate() {
+                window.requestAnimationFrame(animate);
+                cameraControls.update();
+                render();
+
+                stats.update();
+            }
+
+
+
+
+
+            function render() {
+                var delta = clock.getDelta()*2;
+                delta = (delta < 1.0/60.0) ? 1.0/60.0 : delta;
+               // checkRotation();
+               if ( effectController.wedge !== wedB ||
+                effectController.PSMA !== psmaB ||
+                effectController.PEG !== pegB ||
+                effectController.Lysine !== lysineB ||
+                effectController.SPION !== spionB ||
+                effectController.Nitro !== nitroB ||
+                effectController.Mucin !== mucB ||
+                effectController.mrv !== mrvB ||
+                effectController.Glyoxyl !== glyoxylB ||
+                effectController.pegscale !== peg_scale ||
+                effectController.pegico !== peg_ico ||
+                effectController.psmascale !== psma_scale ||
+                effectController.psmaico !== psma_ico ||
+                effectController.shellrad !== shell_rad ||
+                effectController.lysineangle !== lysine_angle ||
+                effectController.lysinebranches !== lysine_branches ||
+                effectController.lysinescale !== lysine_scale ||
+                effectController.lysineico !== lysine_ico ||
+                effectController.spionradius !== spion_radius ||
+                effectController.nnitro !== n_nitro ||
+                effectController.nmuc !== n_muc ||
+                effectController.nmrv !== n_mrv ||
+                effectController.nglyoxyl !== n_glyoxyl ||
+                effectController.snitro !== s_nitro ||
+                effectController.smuc !== s_muc ||
+                effectController.smrv !== s_mrv ||
+                effectController.sglyoxyl !== s_glyoxyl ||
+                effectController.rot !== rotSpeed)
+            {
+                wedB = effectController.wedge;
+                psmaB = effectController.PSMA;
+                pegB = effectController.PEG;
+                lysineB = effectController.Lysine;
+                spionB = effectController.SPION;
+                nitroB = effectController.Nitro;
+                mucB = effectController.Mucin;
+                mrvB = effectController.mrv;
+                glyoxylB = effectController.Glyoxyl;
+                peg_scale = effectController.pegscale;
+                peg_ico = effectController.pegico;
+                psma_scale = effectController.psmascale;
+                psma_ico = effectController.psmaico;
+                shell_rad = effectController.shellrad;
+                lysine_angle = effectController.lysineangle;
+                lysine_branches = effectController.lysinebranches;
+                lysine_scale = effectController.lysinescale;
+                lysine_ico = effectController.lysineico;
+                spion_radius = effectController.spionradius;
+                n_nitro = effectController.nnitro;
+                n_muc = effectController.nmuc;
+                n_mrv = effectController.nmrv;
+                n_glyoxyl = effectController.nglyoxyl;
+                s_nitro = effectController.snitro;
+                s_muc = effectController.smuc;
+                s_mrv = effectController.smrv;
+                s_glyoxyl = effectController.sglyoxyl;
+
+
+                createNewDendrimer();
+                rotSpeed = effectController.rot;
+
+            }
+            cameraControls.autoRotateSpeed = -rotSpeed*delta*30*120;
+
+
+
+            renderer.render(scene, camera);
+
+            }
+            var modal = document.getElementById('myModal');
+            var mod_bod = document.getElementById('innerText');
+            var span = document.getElementById('closebutton');
+
+
+        </script>
+    </body>
 </html>
